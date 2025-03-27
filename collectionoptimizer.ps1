@@ -6,20 +6,27 @@ $MaxPackSizeBytes = 1.95 * 1GB
 
 Write-Host "Enter the SOURCE path or press Enter to use [$DefaultSourcePath]:"
 $UserSourcePath = Read-Host
-if (![string]::IsNullOrWhiteSpace($UserSourcePath)) { $DefaultSourcePath = $UserSourcePath }
+if (![string]::IsNullOrWhiteSpace($UserSourcePath)) {
+    $DefaultSourcePath = $UserSourcePath
+}
 
 Write-Host "Enter the DESTINATION path or press Enter to use [$DefaultDestinationPath]:"
 $UserDestinationPath = Read-Host
-if (![string]::IsNullOrWhiteSpace($UserDestinationPath)) { $DefaultDestinationPath = $UserDestinationPath }
+if (![string]::IsNullOrWhiteSpace($UserDestinationPath)) {
+    $DefaultDestinationPath = $UserDestinationPath
+}
 
 $SourcePath = $DefaultSourcePath
 $DestinationPath = $DefaultDestinationPath
 
-Write-Host "`nStarting Merge Operation..."
+Write-Host ""
+Write-Host "Starting Merge Operation..."
 Write-Host "Source: $SourcePath"
 Write-Host "Destination: $DestinationPath"
 
-if (-not (Test-Path $DestinationPath)) { New-Item -ItemType Directory -Path $DestinationPath | Out-Null }
+if (-not (Test-Path $DestinationPath)) {
+    New-Item -ItemType Directory -Path $DestinationPath | Out-Null
+}
 
 $topLevelFolders = Get-ChildItem -Path $SourcePath -Directory
 if ($topLevelFolders.Count -eq 0) {
@@ -27,44 +34,60 @@ if ($topLevelFolders.Count -eq 0) {
     return
 }
 
-$filesMoved = 0; $duplicates = 0; $spaceSaved = 0
+$filesMoved = 0
+$duplicates = 0
+$spaceSaved = 0
 
 foreach ($folder in $topLevelFolders) {
     Write-Host "Processing folder: $($folder.FullName)"
-    Get-ChildItem -Path $folder.FullName -File -Recurse | ForEach-Object {
-        $relativePath = $_.FullName.Substring($folder.FullName.Length).TrimStart('\')
-        $destFile = Join-Path $DestinationPath $relativePath
-        $destFolder = Split-Path $destFile
-        if (-not (Test-Path $destFolder)) { New-Item -ItemType Directory -Path $destFolder | Out-Null }
-
-        if (Test-Path $destFile) {
-            $duplicates++; $spaceSaved += $_.Length
-            Remove-Item $_.FullName -Force
+    $files = Get-ChildItem -Path $folder.FullName -File -Recurse
+    foreach ($file in $files) {
+        $relativePath = $file.FullName.Substring($folder.FullName.Length).TrimStart('\')
+        $destinationFile = Join-Path $DestinationPath $relativePath
+        $destinationFolder = Split-Path $destinationFile
+        if (-not (Test-Path $destinationFolder)) {
+            New-Item -ItemType Directory -Path $destinationFolder | Out-Null
+        }
+        if (Test-Path $destinationFile) {
+            $duplicates++
+            $spaceSaved += $file.Length
+            Remove-Item -Path $file.FullName -Force
         } else {
-            Move-Item $_.FullName -Destination $destFile
+            Move-Item -Path $file.FullName -Destination $destinationFile
             $filesMoved++
         }
     }
-    Remove-Item $folder.FullName -Recurse -Force
+    Remove-Item -Path $folder.FullName -Recurse -Force
     Write-Host "Removed folder: $($folder.FullName)"
 }
 
-Write-Host "`nMerge Operation Summary:"
+Write-Host ""
+Write-Host "Merge Operation Summary:"
 Write-Host "Files moved: $filesMoved"
 Write-Host "Duplicates found: $duplicates"
 Write-Host ("Space saved from duplicates: {0:N2} KB" -f ($spaceSaved / 1KB))
 
-Write-Host "`nRemoving unused model formats..."
-$badFormats = @(".dx80.vtx",".xbox.vtx",".sw.vtx",".360.vtx")
-$removedCount = 0; $removedSize = 0
-$removedPerFormat = @{}
-foreach ($fmt in $badFormats) { $removedPerFormat[$fmt] = 0 }
+Write-Host ""
+Write-Host "Removing unused model formats..."
 
-Get-ChildItem -Path $DestinationPath -Recurse -File | ForEach-Object {
+$badFormats = @(".dx80.vtx",".xbox.vtx",".sw.vtx",".360.vtx")
+$removedCount = 0
+$removedSize = 0
+
+# Track how many files are removed per format
+$removedPerFormat = @{}
+foreach ($fmt in $badFormats) {
+    $removedPerFormat[$fmt] = 0
+}
+
+$allMergedFiles = Get-ChildItem -Path $DestinationPath -Recurse -File
+foreach ($f in $allMergedFiles) {
     foreach ($fmt in $badFormats) {
-        if ($_.Name.EndsWith($fmt)) {
-            $removedSize += $_.Length; $removedCount++; $removedPerFormat[$fmt]++
-            Remove-Item $_.FullName -Force
+        if ($f.Name.EndsWith($fmt)) {
+            $removedSize += $f.Length
+            $removedCount++
+            $removedPerFormat[$fmt]++
+            Remove-Item -Path $f.FullName -Force
             break
         }
     }
@@ -72,26 +95,37 @@ Get-ChildItem -Path $DestinationPath -Recurse -File | ForEach-Object {
 
 Write-Host ("Unused files removed: $removedCount, Space freed: {0:N2} KB" -f ($removedSize / 1KB))
 Write-Host "Breakdown per format:"
-$removedPerFormat.GetEnumerator() | ForEach-Object { Write-Host "$($_.Key) removed: $($_.Value)" }
+foreach ($fmt in $badFormats) {
+    Write-Host "$fmt removed: $($removedPerFormat[$fmt])"
+}
 
-Write-Host "`nStarting Split Operation on: $DestinationPath"
-$RootFolder = if ($DestinationPath[-1] -eq '\') { $DestinationPath } else { "$DestinationPath\" }
-$CurrentPack = 1; $CurrentPackSize = 0
+Write-Host ""
+Write-Host "Starting Split Operation on: $DestinationPath"
 
-Get-ChildItem -Path $RootFolder -File -Recurse | ForEach-Object {
-    if (($CurrentPackSize + $_.Length) -gt $MaxPackSizeBytes) {
-        $CurrentPack++; $CurrentPackSize = 0
+$RootFolder = $DestinationPath
+$CurrentPack = 1
+$CurrentPackSize = 0
+
+if ($RootFolder[-1] -ne '\') {
+    $RootFolder += '\'
+}
+
+$allFiles = Get-ChildItem -Path $RootFolder -File -Recurse
+foreach ($file in $allFiles) {
+    $fileSize = $file.Length
+    if (($CurrentPackSize + $fileSize) -gt $MaxPackSizeBytes) {
+        $CurrentPack++
+        $CurrentPackSize = 0
     }
-    $relativePath = $_.FullName.Substring($RootFolder.Length).TrimStart('\')
-    $packFolder = Join-Path $RootFolder $CurrentPack
-    $dest = Join-Path $packFolder $relativePath
-    if (-not (Test-Path (Split-Path $dest))) { New-Item -ItemType Directory -Path (Split-Path $dest) | Out-Null }
-    Copy-Item $_.FullName -Destination $dest
-    $CurrentPackSize += $_.Length
+    $relativePath = $file.FullName.Substring($RootFolder.Length).TrimStart('\')
+    $packFolderRoot = Join-Path $RootFolder $CurrentPack
+    $destination = Join-Path $packFolderRoot $relativePath
+    $destDir = Split-Path $destination -Parent
+    if (-not (Test-Path $destDir)) {
+        New-Item -ItemType Directory -Path $destDir | Out-Null
+    }
+    Copy-Item -Path $file.FullName -Destination $destination
+    $CurrentPackSize += $fileSize
 }
 
-Write-Host "Removing original source files..."
-if (Test-Path $SourcePath) {
-    Remove-Item -Path (Join-Path $SourcePath '*') -Recurse -Force
-}
-Write-Host "Original source files removed."
+Write-Host "Splitting complete. Packs have been created under '$DestinationPath'."
