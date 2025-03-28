@@ -1,48 +1,62 @@
-# 📦 Collection Optimizer
+---
 
-A PowerShell utility that **merges**, **cleans**, and **splits** large folder collections — perfect for consolidating and packaging Garry’s Mod addons (or any large file tree).
+# Collection Optimizer
+
+A PowerShell utility designed to **merge**, **clean**, and **split** large file collections. It’s ideal for consolidating and packaging Garry’s Mod addons or any extensive file tree.
 
 ---
 
-## 🚀 Features
+## Features
 
-1. **Merge**  
-   - Recursively move every file from each top‑level subfolder in a source directory into a single destination folder  
-   - Automatically delete duplicates and report total space saved  
+### 1. Merge
+- **Recursively combine files:**  
+  Moves every file from each top‑level subfolder in your source directory into a single destination folder.
+- **Duplicate management:**  
+  Automatically detects and deletes duplicate files while reporting the total space saved.
 
-2. **Clean**  
-   - Remove unwanted model‑format files (`.dx80.vtx`, `.xbox.vtx`, `.sw.vtx`, `.360.vtx`)  
-   - Report count of removed files and space reclaimed  
+### 2. Clean
+- **Remove unnecessary files:**  
+  Deletes unwanted model‑format files:  
+  - `.dx80.vtx` – DirectX 8.0 fallback (deprecated)
+  - `.xbox.vtx` – Original Xbox compiled (not used in GMOD)
+  - `.sw.vtx` – Software rendering path (not used in GMOD)
+  - `.360.vtx` – Xbox 360 compiled (not used in GMOD)
+- **Reporting:**  
+  Displays the count of removed files and the space reclaimed, including a breakdown by file type.
 
-3. **Split**  
-   - Copy the merged folder into sequentially numbered subfolders (`1`, `2`, `3`, …)  
-   - Each subfolder capped at ~1.95 GB for easy distribution  
+### 3. Split
+- **Organized packaging:**  
+  Copies the merged files into sequentially numbered subfolders (e.g., `1`, `2`, `3`, …).
+- **Size limit:**  
+  Each subfolder is capped at approximately 1.95 GB for easier distribution.
 
-4. **Cleanup**  
-   - Delete original source folders after successful merge  
-   - Leaves only the split packs in the destination  
-
----
-
-## 📂 Installation
-
-1. Download or clone this repository.  
-2. Ensure `collectionoptimizer.ps1` and `run.bat` reside in the **same folder**.
-
----
-
-## ▶️ Usage
-
-Double‑click **run.bat** (or execute it in Command Prompt). It will:
-
-1. Temporarily set PowerShell’s execution policy  
-2. Run `collectionoptimizer.ps1`
-
-You’ll be prompted to enter the **Source** and **Destination** paths (defaults shown in brackets). Press Enter to accept defaults.
+### 4. Cleanup
+- **Post-merge cleanup:**  
+  Deletes the original source folders after a successful merge, leaving only the split packages in the destination folder.
 
 ---
 
-## 📋 Example Output
+## Installation
+
+1. **Download or clone the repository.**
+2. **Place files together:**  
+   Ensure that both `collectionoptimizer.ps1` and `run.bat` are located in the same folder.
+
+---
+
+## Usage
+
+1. **Run the utility:**  
+   Double‑click **run.bat** or execute it from the Command Prompt. This will:
+   - Temporarily adjust PowerShell’s execution policy.
+   - Execute `collectionoptimizer.ps1`.
+
+2. **Input paths:**  
+   You will be prompted to enter the **Source** and **Destination** paths. Default values are provided, and you can press Enter to accept them.
+
+---
+
+## Example Output
 
 ```
 Starting Merge Operation...
@@ -60,10 +74,10 @@ Duplicates found: 12 (50.00 KB saved)
 Removing unused model formats...
 Unused files removed: 150 (100.00 KB freed)
 Breakdown per format:
-.dx80.vtx removed: 50
-.xbox.vtx removed: 50
-.sw.vtx removed: 25
-.360.vtx removed: 25
+  .dx80.vtx removed: 50
+  .xbox.vtx removed: 50
+  .sw.vtx removed: 25
+  .360.vtx removed: 25
 
 Starting Split Operation on: D:\Merged
 Splitting complete. Packs have been created under 'D:\Merged'.
@@ -71,6 +85,8 @@ Splitting complete. Packs have been created under 'D:\Merged'.
 
 ---
 
-## 🔗 Related
+## Related
 
-For uploading Garry’s Mod addons to Steam Workshop, check out **gmpublisher** 👉 https://github.com/WilliamVenner/gmpublisher  
+For uploading Garry’s Mod addons to the Steam Workshop, check out [gmpublisher](https://github.com/WilliamVenner/gmpublisher).
+
+---
