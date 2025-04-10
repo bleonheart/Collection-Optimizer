@@ -2,7 +2,7 @@
 
 $DefaultSourcePath = "C:\Users\Admin\AppData\Local\Temp\gmpublisher"
 $DefaultDestinationPath = "D:\Merged"
-$MaxPackSizeBytes = 1.95 * 1GB
+$MaxPackSizeBytes = 1.90 * 1GB
 
 Write-Host "Enter the SOURCE path or press Enter to use [$DefaultSourcePath]:"
 $UserSourcePath = Read-Host
