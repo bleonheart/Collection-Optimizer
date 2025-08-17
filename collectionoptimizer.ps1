@@ -1,6 +1,6 @@
 ﻿param()
 
-$DefaultSourcePath = "C:\Users\Admin\AppData\Local\Temp\gmpublisher"
+$DefaultSourcePath = "C:\Users\David\AppData\Local\Temp\gmpublisher"
 $DefaultDestinationPath = "D:\Merged"
 $MaxPackSizeBytes = 1.90 * 1GB
 
