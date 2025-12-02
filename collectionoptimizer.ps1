@@ -65,7 +65,7 @@ Write-Host ""
 Write-Host "Merge Operation Summary:"
 Write-Host "Files moved: $filesMoved"
 Write-Host "Duplicates found: $duplicates"
-Write-Host ("Space saved from duplicates: {0:N2} KB" -f ($spaceSaved / 1KB))
+Write-Host ("Space saved from duplicates: {0:N2} MB" -f ($spaceSaved / 1MB))
 
 Write-Host ""
 Write-Host "Removing unused model formats..."
@@ -93,7 +93,7 @@ foreach ($f in $allMergedFiles) {
     }
 }
 
-Write-Host ("Unused files removed: $removedCount, Space freed: {0:N2} KB" -f ($removedSize / 1KB))
+Write-Host ("Unused files removed: $removedCount, Space freed: {0:N2} MB" -f ($removedSize / 1MB))
 Write-Host "Breakdown per format:"
 foreach ($fmt in $badFormats) {
     Write-Host "$fmt removed: $($removedPerFormat[$fmt])"
