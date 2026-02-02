@@ -1,7 +1,7 @@
 param()
 
-$DefaultSourcePath = "C:\Users\David\AppData\Local\Temp\gmpublisher"
-$DefaultDestinationPath = "E:\Merged"
+$DefaultSourcePath = "C:\Users\ADMINI~1\AppData\Local\Temp\gmpublisher"
+$DefaultDestinationPath = "D:\Merged"
 $MaxPackSizeBytes = 3.90 * 1GB
 
 Write-Host "Enter the SOURCE path or press Enter to use [$DefaultSourcePath]:"
