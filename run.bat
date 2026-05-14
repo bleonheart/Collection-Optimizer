@@ -1,4 +1,5 @@
 @echo off
 cd /d "%~dp0"
-PowerShell -NoProfile -ExecutionPolicy Unrestricted -File "%~dp0collectionoptimizer.ps1"
+echo Launching Collection Optimizer Python GUI...
+python "%~dp0collectionoptimizer.py"
 pause

@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "*.ps1": "powershell"
+    },
+    "[powershell]": {
+        "editor.defaultFormatter": "ms-vscode.powershell"
+    }
+}
