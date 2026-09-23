@@ -1,12 +1,16 @@
 <p align="center">
  <strong>Collection Optimizer</strong><br/>
- A desktop utility for merging, cleaning, and splitting Garry's Mod addon collections into cleaner deployable packs.<br/>
- Built to help server owners and content maintainers remove dead weight, collapse duplicate files, and prepare content for upload or distribution.<br/>
+ A desktop utility for merging, cleaning, benchmarking, and splitting Garry's Mod addon collections into deployable content packs.<br/>
+ Built for server owners and content maintainers who need to reduce duplicate content, remove unused model formats, organize Lua separately, and prepare large collections for deployment.<br/>
 </p>
 
 <p align="center">
  <a href="./license">
   <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License MIT" />
+ </a>
+ <img src="https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white" alt="Python 3.10+" />
+ <a href="https://github.com/bleonheart/Collection-Optimizer/stargazers">
+  <img src="https://img.shields.io/github/stars/bleonheart/Collection-Optimizer?style=social" alt="GitHub Stars" />
  </a>
 </p>
 
@@ -16,99 +20,170 @@
 
 ## Quick Start
 
-<p align="center">
- Clone the repository, run <code>run.bat</code>, and launch the desktop application on Windows.
-</p>
+Clone the repository:
 
 ```bash
-git clone https://github.com/your-org/Collection-Optimizer.git
+git clone https://github.com/bleonheart/Collection-Optimizer.git
 cd Collection-Optimizer
-run.bat
 ```
 
-The batch launcher will:
-
-1. Start the Python desktop UI by default
-2. Use the saved `settings.json` values if they exist
-3. Run the PySide6 application directly from this repository
-
-## Usage
-
-Run the launcher without arguments:
+Install the GUI dependency:
 
 ```bash
+python -m pip install PySide6
+```
+
+Launch the application:
+
+```bat
 run.bat
 ```
 
-This mode will:
+You can also start it directly:
 
-1. Launch the PySide6 desktop app with the saved Source, Destination, and Max Pack Size settings
-2. Let you browse folders, run merge and split operations, and review logs in one window
-3. Persist settings back to `settings.json` whenever you finish editing the path or size fields
+```bash
+python collectionoptimizer.py
+```
+
+## Overview
+
+Collection Optimizer is designed around the common Garry's Mod content workflow where a large set of downloaded or exported addons needs to be consolidated into cleaner deployment packs.
+
+The application provides a PySide6 desktop interface for selecting source and destination directories, configuring pack sizes, running merge/split operations, and reviewing operation summaries.
 
 ## Features
 
-### File Merging
+### Merge Addons
 
-- `Run Merge`  
-  Merge all top-level addon folders from the source folder into one destination folder while removing duplicate collisions.
+Merge top-level addon directories into one destination tree.
 
-- `Run Split`  
-  Split merged content into sequential numbered addon packs under `Destination\Addons` using the chosen maximum pack size.
+During the merge process the application can:
 
-- `Run Merge + Split`  
-  Run the full workflow in one pass: merge addon folders first, then split the result into numbered packs.
+- Move addon files into a shared destination
+- Detect duplicate destination paths
+- Remove duplicate source files
+- Remove unused Source model sidecar formats
+- Remove empty directories
+- Track processed addons, moved files, duplicates, failures, and saved space
 
-### Cleanup Utilities
+### Split Content
 
-- `Remove unused model formats`  
-  Remove `.dx80.vtx`, `.xbox.vtx`, `.sw.vtx`, and `.360.vtx` files that are not needed for Garry's Mod.
+Split merged content into numbered packs under:
 
-- `Remove empty folders`  
-  Clean up empty directories left behind after merge, deletion, or split operations.
+```text
+Destination/Addons/
+```
 
-### Merge Options
+Pack boundaries are controlled by the configured maximum pack size.
 
-- `Split Lua files into Destination\Lua\AddonName`  
-  Store Lua files separately under `Destination\Lua\<AddonName>` during merge instead of mixing them into the main merged content tree. Trailing suffixes like `_1` or `_27` are stripped from Lua addon folder names.
+The default maximum pack size is:
 
-- `Delete original merged files after split`  
-  Remove the pre-split merged files from the destination root after numbered packs have been created.
+```text
+3.90 GB
+```
 
-### Benchmark
+### Lua Separation
 
-- `Benchmark Merge`  
-  Preview how many addon folders, files, and total bytes exist in the source collection without modifying anything.
+When enabled, Lua files can be separated into:
 
-- `Benchmark Split`  
-  Preview how many files will be split, the total size involved, and the estimated number of packs required.
+```text
+Destination/Lua/<AddonName>/
+```
 
-- `Calculate Folder Size`  
-  Calculate and display the current destination folder size in the UI and log panel.
+Numeric suffixes such as `_1` or `_27` are stripped from addon names when creating Lua output directories.
 
-## Settings
+### Cleanup
 
-The desktop app stores its UI settings in `settings.json` beside the scripts.
+The optimizer removes model formats that Garry's Mod normally does not need:
+
+- `.dx80.vtx`
+- `.xbox.vtx`
+- `.sw.vtx`
+- `.360.vtx`
+
+It can also remove empty directories left behind by merge and cleanup operations.
+
+### Benchmarks
+
+Benchmark operations let you inspect a workload before performing the main operation.
+
+Available workflow information includes:
+
+- Addon counts
+- File counts
+- Total content size
+- Estimated pack counts
+- Destination folder size
+
+### Persistent Settings
+
+Application settings are stored in `settings.json`.
 
 Saved values include:
 
 - Source path
 - Destination path
-- Max pack size in GB
+- Maximum pack size
 
-These settings are loaded automatically on startup and saved again whenever you finish editing the related fields or use the browse buttons.
+The application restores these settings between launches.
+
+## Data Safety
+
+**Use a backup or disposable source directory when merging.**
+
+The merge workflow is intentionally destructive to its source:
+
+- Files are moved from source addon directories into the destination
+- Duplicate source files may be deleted
+- Processed addon directories are removed after their files are handled
+
+The split workflow copies merged files into numbered packs. If the delete-original option is enabled, the original merged files are then removed.
+
+Use the benchmark tools first when you want to inspect the workload before changing files.
+
+## Typical Workflow
+
+1. Export or download addons into a source directory
+2. Select that directory as the source
+3. Choose a clean destination directory
+4. Set the desired maximum pack size
+5. Run a benchmark
+6. Run **Merge** or **Merge + Split**
+7. Review the operation log and summary
+8. Use the generated packs for deployment or upload
+
+## Repository Structure
+
+```text
+Collection-Optimizer/
+├── collectionoptimizer.py
+├── run.bat
+├── settings.json
+├── README.md
+└── license
+```
 
 ## Requirements
 
-- Windows is the primary supported platform for the desktop workflow
+- Windows for the provided batch launcher and default path conventions
 - Python 3.10 or newer
-- `PySide6`
+- PySide6
+
+Install PySide6 with:
+
+```bash
+python -m pip install PySide6
+```
 
 ## Contributing
 
-We welcome improvements to both the UI and the collection-processing workflow. To contribute:
+Contributions to the UI, cleanup logic, performance, reporting, and deployment workflow are welcome.
 
 1. Fork the repository
 2. Create a feature branch
-3. Make your changes and test them
-4. Open a pull request with a clear explanation of what changed
+3. Make and test your changes
+4. Open a pull request with a clear description of the change
+
+## License
+
+Collection Optimizer is distributed under the MIT License. See [license](./license) for details.
