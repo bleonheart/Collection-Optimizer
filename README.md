@@ -10,7 +10,7 @@
 
 <p align="center">
  <a href="./license">
-  <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License MIT" />
+  <img src="https://img.shields.io/badge/License-PolyForm%20Noncommercial-blue.svg" alt="License PolyForm Noncommercial" />
  </a>
  <img src="https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white" alt="Python 3.10+" />
  <img src="https://img.shields.io/badge/UI-PySide6-green" alt="PySide6" />
@@ -197,7 +197,9 @@ Contributions to performance, cleanup logic, UI behavior, reporting, and deploym
 
 ## License
 
-Assemblia is distributed under the MIT License.
+Current versions of Assemblia are licensed under the PolyForm Noncommercial License 1.0.0. Commercial use is not licensed under these terms.
+
+Earlier versions released under the MIT License remain available under the MIT terms that applied to those versions. Third-party material, if any, remains subject to its own license.
 
 See [license](./license) for details.
 
