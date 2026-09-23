@@ -1,4 +1,5 @@
 <p align="center">
+ <img src="./logo.svg" alt="Assemblia Logo" width="220" /><br/>
  <strong>Collection Optimizer</strong><br/>
  A desktop utility for merging, cleaning, benchmarking, and splitting Garry's Mod addon collections into deployment-ready content packs.<br/>
  Built for server owners and content maintainers working with large workshop exports and addon libraries.
