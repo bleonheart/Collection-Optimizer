@@ -1,8 +1,11 @@
 <p align="center">
- <img src="./logo.svg" alt="Assemblia Logo" width="220" /><br/>
- <strong>Collection Optimizer</strong><br/>
- A desktop utility for merging, cleaning, benchmarking, and splitting Garry's Mod addon collections into deployment-ready content packs.<br/>
+ <strong>Assemblia — Garry's Mod Collection Optimizer</strong><br/>
+ A desktop utility for merging, cleaning, benchmarking, and splitting addon collections into deployment-ready content packs.<br/>
  Built for server owners and content maintainers working with large workshop exports and addon libraries.
+</p>
+
+<p align="center">
+ <img src="./logo.svg" alt="Assemblia Logo" width="220" />
 </p>
 
 <p align="center">
@@ -11,18 +14,16 @@
  </a>
  <img src="https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white" alt="Python 3.10+" />
  <img src="https://img.shields.io/badge/UI-PySide6-green" alt="PySide6" />
- <a href="https://github.com/bleonheart/Collection-Optimizer/stargazers">
-  <img src="https://img.shields.io/github/stars/bleonheart/Collection-Optimizer?style=social" alt="GitHub Stars" />
+ <a href="https://github.com/bleonheart/Assemblia/stargazers">
+  <img src="https://img.shields.io/github/stars/bleonheart/Assemblia?style=social" alt="GitHub Stars" />
  </a>
 </p>
-
-<h1 align="center">Collection Optimizer</h1>
 
 ---
 
 ## Overview
 
-Collection Optimizer turns large Garry's Mod addon directories into cleaner, easier-to-deploy content packs.
+Assemblia turns large Garry's Mod addon directories into cleaner, easier-to-deploy content packs.
 
 The application provides a PySide6 desktop interface for selecting source and destination directories, consolidating addon files, removing unnecessary model formats, separating Lua content, benchmarking workloads, and splitting the resulting collection into size-limited packs.
 
@@ -31,8 +32,8 @@ The application provides a PySide6 desktop interface for selecting source and de
 Clone the repository:
 
 ```bash
-git clone https://github.com/bleonheart/Collection-Optimizer.git
-cd Collection-Optimizer
+git clone https://github.com/bleonheart/Assemblia.git
+cd Assemblia
 ```
 
 Install PySide6:
@@ -99,7 +100,7 @@ Trailing numeric addon suffixes such as `_1` or `_27` are normalized when buildi
 
 ### Garry's Mod Cleanup
 
-Collection Optimizer removes Source model formats that are generally unnecessary for Garry's Mod deployment:
+Assemblia removes Source model formats that are generally unnecessary for Garry's Mod deployment:
 
 - `.dx80.vtx`
 - `.xbox.vtx`
@@ -153,7 +154,7 @@ Use benchmark functionality before destructive operations when you want to inspe
 ## Typical Workflow
 
 1. Export or download addons into a source directory
-2. Select the source in Collection Optimizer
+2. Select the source in Assemblia
 3. Choose a clean destination
 4. Configure the maximum pack size
 5. Decide whether Lua should be separated
@@ -165,7 +166,7 @@ Use benchmark functionality before destructive operations when you want to inspe
 ## Repository Structure
 
 ```text
-Collection-Optimizer/
+Assemblia/
 ├── collectionoptimizer.py
 ├── run.bat
 ├── settings.json
@@ -196,7 +197,7 @@ Contributions to performance, cleanup logic, UI behavior, reporting, and deploym
 
 ## License
 
-Collection Optimizer is distributed under the MIT License.
+Assemblia is distributed under the MIT License.
 
 See [license](./license) for details.
 
